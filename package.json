@@ -1,0 +1,20 @@
+{
+  "name": "node-base",
+  "version": "1.0.0",
+  "description": "Node.js server app base.",
+  "author": "Norbert Mieczkowski <mieczkowskinorbert@gmail.com>",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "when": "3.7.7",
+    "express": "4.13.3",
+    "body-parser": "1.14.2",
+    "sequelize": "3.17.1",
+    "pg": "4.4.3",
+    "bcrypt": "0.8.5",
+    "pure-uuid": "1.1.0"
+  }
+}
