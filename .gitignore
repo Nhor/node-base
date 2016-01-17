@@ -1,0 +1,12 @@
+# node.js files
+node_modules
+npm-debug.log
+
+# config file
+libs/config.js
+
+# log files
+logs
+
+# public files
+public
