@@ -1,5 +1,7 @@
 'use strict';
 
+var logger = require('./logger.js');
+
 /**
  * Validate specified fields for the correct formats.
  * @param {object} request - HTTP request with fields to validate.
@@ -30,6 +32,7 @@ var validate = function (request, fields) {
     }
   }
   if (Object.keys(result).length) {
+    logger.log(JSON.stringify(result));
     return result;
   }
 };
@@ -52,29 +55,20 @@ var StringArrayField = function (value) {
 };
 
 var IntegerField = function (value) {
-  if (typeof value !== 'number') {
-    return 'Got wrong field format, expected an integer.';
-  }
-  if (value !== parseInt(value)) {
+  if (typeof value !== 'number' || value !== parseInt(value)) {
     return 'Got wrong field format, expected an integer.';
   }
 };
 
 var FloatField = function (value) {
-  if (typeof value !== 'number') {
-    return 'Got wrong field format, expected a float.';
-  }
-  if (value !== parseFloat(value)) {
+  if (typeof value !== 'number' || value !== parseFloat(value)) {
     return 'Got wrong field format, expected a float.';
   }
 };
 
 var EmailField = function (value) {
   var emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (typeof value !== 'string') {
-    return 'Got wrong field format, expected a string with an email.';
-  }
-  if (!emailRegex.test(value)) {
+  if (typeof value !== 'string' || !emailRegex.test(value)) {
     return 'Got wrong field format, expected a string with an email.';
   }
 };

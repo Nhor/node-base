@@ -14,7 +14,6 @@ server.post('/register', bodyParser.json(), function (req, res) {
     email: fields.EmailField
   });
   if (validation) {
-    logger.log(JSON.stringify(validation));
     res.status(400).send(validation);
     return;
   }

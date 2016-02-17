@@ -25,7 +25,7 @@ var authenticate = function (request) {
         deleted: null
       }
     }).then(function (user) {
-      logger.log('Authentication successful for user="' + user.username + '".');
+      logger.log('Authentication successful for use with username="' + user.username + '".');
       return user;
     });
   });
@@ -113,7 +113,7 @@ var login = function (username, password) {
   }
   return User.findOne(queryParams).then(function (user) {
     if (!user) {
-      logger.log('User "' + username + '" does not exist.');
+      logger.log('User with username="' + username + '" does not exist.');
       return;
     }
     return bcrypt.compare(password, user.password).then(function (res) {
