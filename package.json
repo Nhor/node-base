@@ -12,6 +12,7 @@
     "when": "3.7.7",
     "express": "4.13.3",
     "body-parser": "1.14.2",
+    "cors": "2.7.1",
     "sequelize": "3.17.1",
     "pg": "4.4.3",
     "bcrypt": "0.8.5",
