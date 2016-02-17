@@ -11,8 +11,8 @@ server.enable('trust proxy');
 server.use(cors());
 
 server.use(function (req, res, next) {
-  logger.log(req.path + ' request received from ' + req.ip + '. ' +
-    'Request headers: ' + JSON.stringify(req.headers) + '.');
+  logger.log(req.method + ' ' + req.path + ' request received from ' + req.ip +
+    '. ' + 'Request headers: ' + JSON.stringify(req.headers) + '.');
   next();
 });
 
