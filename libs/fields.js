@@ -19,62 +19,62 @@
  *     });
  * {username: 'Got wrong field format, expected an integer.'}
  */
-var validate = function(request, fields) {
+var validate = function (request, fields) {
   var result = {};
   var keys = Object.keys(fields);
   var temp;
-  for(var i = 0; i < keys.length; i++) {
+  for (var i = 0; i < keys.length; i++) {
     temp = fields[keys[i]](request.body[keys[i]]);
-    if(temp) {
+    if (temp) {
       result[keys[i]] = temp;
     }
   }
-  if(Object.keys(result).length) {
+  if (Object.keys(result).length) {
     return result;
   }
 };
 
-var StringField = function(value) {
-  if(typeof value !== 'string') {
+var StringField = function (value) {
+  if (typeof value !== 'string') {
     return 'Got wrong field format, expected a string.';
   }
 };
 
-var StringArrayField = function(value) {
-  if(!(value instanceof Array)) {
+var StringArrayField = function (value) {
+  if (!(value instanceof Array)) {
     return 'Got wrong field format, expected an array of strings.';
   }
-  for(var i = 0; i < value.length; i++) {
-    if(typeof value[i] !== 'string') {
+  for (var i = 0; i < value.length; i++) {
+    if (typeof value[i] !== 'string') {
       return 'Got wrong field format, expected an array of strings.';
     }
   }
 };
 
-var IntegerField = function(value) {
-  if(typeof value !== 'number') {
+var IntegerField = function (value) {
+  if (typeof value !== 'number') {
     return 'Got wrong field format, expected an integer.';
   }
-  if(value !== parseInt(value)) {
+  if (value !== parseInt(value)) {
     return 'Got wrong field format, expected an integer.';
   }
 };
 
-var FloatField = function(value) {
-  if(typeof value !== 'number') {
+var FloatField = function (value) {
+  if (typeof value !== 'number') {
     return 'Got wrong field format, expected a float.';
   }
-  if(value !== parseFloat(value)) {
+  if (value !== parseFloat(value)) {
     return 'Got wrong field format, expected a float.';
   }
 };
 
-var EmailField = function(value) {
+var EmailField = function (value) {
   var emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if(typeof value !== 'string') {
+  if (typeof value !== 'string') {
     return 'Got wrong field format, expected a string with an email.';
   }
-  if(!emailRegex.test(value)) {
+  if (!emailRegex.test(value)) {
     return 'Got wrong field format, expected a string with an email.';
   }
 };

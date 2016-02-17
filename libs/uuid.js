@@ -6,10 +6,10 @@ var UUID = require('pure-uuid');
  * Create UUID version 4.
  * @param {boolean} [dashless] - If true, returned UUID will not contain dashes. Defaults to true.
  */
-var v4 = function(dashless) {
+var v4 = function (dashless) {
   dashless = typeof dashless === 'undefined' ? true : dashless;
   var uuid = (new UUID(4)).format();
-  if(dashless) {
+  if (dashless) {
     uuid = uuid.replace(/-/g, '');
   }
   return uuid;
@@ -21,11 +21,11 @@ var v4 = function(dashless) {
  * @param {string} namespace - Namespace to be used in hashing. Use `namespace` values.
  * @param {boolean} [dashless] - If true, returned UUID will not contain dashes. Defaults to true.
  */
-var v5 = function(name, namespace, dashless) {
+var v5 = function (name, namespace, dashless) {
   namespace = namespace || namespaceOpts.url;
   dashless = typeof dashless === 'undefined' ? true : dashless;
   var uuid = (new UUID(5, namespace, name)).format();
-  if(dashless) {
+  if (dashless) {
     uuid = uuid.replace(/-/g, '');
   }
   return uuid;

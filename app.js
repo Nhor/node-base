@@ -17,10 +17,10 @@ var routes = {
   logout: require('./routes/logout.js')
 };
 
-database.sync().then(function() {
-  server.listen(config.port, function() {
+database.sync().then(function () {
+  server.listen(config.port, function () {
     logger.log("Server listening on port: " + this.address().port);
   });
-}).catch(function(err) {
+}).catch(function (err) {
   logger.log(err);
 });

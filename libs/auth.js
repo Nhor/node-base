@@ -2,6 +2,7 @@
 
 var nodefn = require('when/node');
 var bcrypt = nodefn.liftAll(require('bcrypt'));
+var config = require('./config.js');
 var logger = require('./logger.js');
 var uuid = require('./uuid.js');
 var AuthToken = require('../models/AuthToken.js');
@@ -11,14 +12,19 @@ var User = require('../models/User.js');
  * Authenticate user by the AuthToken provided in the HTTP request header.
  * @param {object} request - HTTP request.
  */
-var authenticate = function(request) {
+var authenticate = function (request) {
   var queryParams = {where: {key: request.headers.authtoken, expired: null}};
-  return AuthToken.findOne(queryParams).then(function(authToken) {
-    if(!authToken) {
+  return AuthToken.findOne(queryParams).then(function (authToken) {
+    if (!authToken) {
       logger.log('Authentication failed, no AuthToken with key="' + request.headers.authtoken + '" found.');
       return;
     }
-    return User.findOne({where: {id: authToken.userId, deleted: null}}).then(function(user) {
+    return User.findOne({
+      where: {
+        id: authToken.userId,
+        deleted: null
+      }
+    }).then(function (user) {
       logger.log('Authentication successful for user="' + user.username + '".');
       return user;
     });
@@ -32,24 +38,43 @@ var authenticate = function(request) {
  * @param {string} email - Email for the user to register.
  * @return {AuthToken} Authentication token OR {string} Error message.
  */
-var register = function(username, password, email) {
-  return User.findOne({where: {username: {$iLike: username}, deleted: null}}).then(function(user) {
-    if(user) {
-      var msg = 'User with username="' + username + '" already exists.';
+var register = function (username, password, email) {
+  var msg;
+  if (!username.match(config.validators.username.regex)) {
+    msg = config.validators.username.description;
+    logger.log(msg);
+    return msg;
+  } else if (!password.match(config.validators.password.regex)) {
+    msg = config.validators.password.description;
+    logger.log(msg);
+    return msg;
+  }
+  return User.findOne({
+    where: {
+      username: {$iLike: username},
+      deleted: null
+    }
+  }).then(function (user) {
+    if (user) {
+      msg = 'User with username="' + username + '" already exists.';
       logger.log(msg);
       return msg;
     }
-    return User.findOne({where: {email: email.toLowerCase()}}).then(function(user) {
-      if(user) {
-        var msg = 'User with email="' + email.toLowerCase() + '" already exists.';
+    return User.findOne({where: {email: email.toLowerCase()}}).then(function (user) {
+      if (user) {
+        msg = 'User with email="' + email.toLowerCase() + '" already exists.';
         logger.log(msg);
         return msg;
       }
-      return bcrypt.genSalt(10).then(function(salt) {
+      return bcrypt.genSalt(10).then(function (salt) {
         return bcrypt.hash(password, salt);
-      }).then(function(hash) {
-        return User.create({username: username, password: hash, email: email.toLowerCase()});
-      }).then(function(user) {
+      }).then(function (hash) {
+        return User.create({
+          username: username,
+          password: hash,
+          email: email.toLowerCase()
+        });
+      }).then(function (user) {
         logger.log('Successfully registered user with username="' + user.username + '".');
         return login(user.username, password);
       });
@@ -62,9 +87,9 @@ var register = function(username, password, email) {
  * @param {User} user - Requesting user model instance.
  * @param {boolean} True if unregister was successful.
  */
-var unregister = function(user) {
-  return logout(user).then(function(res) {
-    if(!res) {
+var unregister = function (user) {
+  return logout(user).then(function (res) {
+    if (!res) {
       return;
     }
     user.destroy();
@@ -79,30 +104,30 @@ var unregister = function(user) {
  * @param {string} password - User password.
  * @return {AuthToken} Authentication token.
  */
-var login = function(username, password) {
+var login = function (username, password) {
   var queryParams = {where: {deleted: null}};
-  if(username.indexOf('@') > 0) {
+  if (username.indexOf('@') > 0) {
     queryParams.where.email = username.toLowerCase();
   } else {
     queryParams.where.username = {$iLike: username};
   }
-  return User.findOne(queryParams).then(function(user) {
-    if(!user) {
+  return User.findOne(queryParams).then(function (user) {
+    if (!user) {
       logger.log('User "' + username + '" does not exist.');
       return;
     }
-    return bcrypt.compare(password, user.password).then(function(res) {
-      if(!res) {
+    return bcrypt.compare(password, user.password).then(function (res) {
+      if (!res) {
         logger.log('Password does not match for user with username="' + user.username + '".');
         return;
       }
       logger.log('Successfully logged in user with username="' + user.username + '".');
-      return AuthToken.findOne({where: {userId: user.id}}).then(function(token) {
-        if(token) {
+      return AuthToken.findOne({where: {userId: user.id}}).then(function (token) {
+        if (token) {
           token.destroy();
         }
         return AuthToken.create({key: uuid.v4(), userId: user.id});
-      }).then(function(authToken) {
+      }).then(function (authToken) {
         return authToken;
       });
     });
@@ -114,9 +139,9 @@ var login = function(username, password) {
  * @param {User} user - Requesting user model instance.
  * @param {boolean} True if logout was successful.
  */
-var logout = function(user) {
-  return AuthToken.findOne({where: {userId: user.id}}).then(function(authToken) {
-    if(authToken) {
+var logout = function (user) {
+  return AuthToken.findOne({where: {userId: user.id}}).then(function (authToken) {
+    if (authToken) {
       authToken.destroy();
     }
     logger.log('Successfully logged out user with username="' + user.username + '".');
