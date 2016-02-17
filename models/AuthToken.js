@@ -29,10 +29,9 @@ var AuthToken = database.define('auth_token', {
   }
 }, {
   timestamps: true,
-  paranoid: true,
+  paranoid: false,
   createdAt: 'created',
-  updatedAt: false,
-  deletedAt: 'expired'
+  updatedAt: false
 });
 
 module.exports = AuthToken;

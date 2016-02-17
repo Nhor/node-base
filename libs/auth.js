@@ -21,8 +21,7 @@ var authenticate = function (request) {
     }
     return User.findOne({
       where: {
-        id: authToken.userId,
-        deleted: null
+        id: authToken.userId
       }
     }).then(function (user) {
       logger.log('Authentication successful for use with username="' + user.username + '".');
