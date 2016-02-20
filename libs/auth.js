@@ -13,7 +13,7 @@ var User = require('../models/User.js');
  * @param {object} request - HTTP request.
  */
 var authenticate = function (request) {
-  var queryParams = {where: {key: request.headers.authtoken, expired: null}};
+  var queryParams = {where: {key: request.headers.authtoken}};
   return AuthToken.findOne(queryParams).then(function (authToken) {
     if (!authToken) {
       logger.log('Authentication failed, no AuthToken with key="' + request.headers.authtoken + '" found.');
@@ -123,9 +123,16 @@ var login = function (username, password) {
       logger.log('Successfully logged in user with username="' + user.username + '".');
       return AuthToken.findOne({where: {userId: user.id}}).then(function (token) {
         if (token) {
+          if (checkAuthTokenValidity(token)) {
+            return token;
+          }
           token.destroy();
         }
-        return AuthToken.create({key: uuid.v4(), userId: user.id});
+        return AuthToken.create({
+          key: uuid.v4(),
+          expirationDate: new Date((new Date()).getTime() + config.authTokenExpiration * 24 * 60 * 60 * 1000),
+          userId: user.id
+        });
       }).then(function (authToken) {
         return authToken;
       });
@@ -136,7 +143,7 @@ var login = function (username, password) {
 /**
  * Logout user.
  * @param {User} user - Requesting user model instance.
- * @param {boolean} True if logout was successful.
+ * @return {boolean} True if logout was successful.
  */
 var logout = function (user) {
   return AuthToken.findOne({where: {userId: user.id}}).then(function (authToken) {
@@ -146,6 +153,15 @@ var logout = function (user) {
     logger.log('Successfully logged out user with username="' + user.username + '".');
     return true;
   });
+};
+
+/**
+ * Check if AuthToken expiration date is still valid.
+ * @param {AuthToken} authToken - AuthToken object.
+ * @return {boolean} True if the AuthToken is still valid.
+ */
+var checkAuthTokenValidity = function (authToken) {
+  return authToken.expirationDate < new Date((new Date).getTime() + config.authTokenExpiration * 24 * 60 * 60 * 1000);
 };
 
 module.exports.authenticate = authenticate;
