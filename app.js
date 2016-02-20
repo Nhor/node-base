@@ -1,5 +1,6 @@
 'use strict';
 
+var fs = require('fs');
 var config = require('./libs/config.js');
 var server = require('./libs/server.js');
 var database = require('./libs/database.js');
@@ -16,6 +17,10 @@ var routes = {
   login: require('./routes/login.js'),
   logout: require('./routes/logout.js')
 };
+
+if (!fs.existsSync(__dirname + '/logs')) {
+  fs.mkdirSync(__dirname + '/logs')
+}
 
 database.sync().then(function () {
   server.listen(config.port, function () {
