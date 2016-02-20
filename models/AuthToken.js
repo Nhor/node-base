@@ -19,7 +19,7 @@ var AuthToken = database.define('auth_token', {
   },
   expirationDate: {
     field: 'expiration_date',
-    type: Sequelize.STRING,
+    type: Sequelize.DATE,
     allowNull: false
   },
   userId: {
