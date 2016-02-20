@@ -19,6 +19,9 @@ var authenticate = function (request) {
       logger.log('Authentication failed, no AuthToken with key="' + request.headers.authtoken + '" found.');
       return;
     }
+    if (checkAuthTokenValidity(authToken)) {
+
+    }
     return User.findOne({
       where: {
         id: authToken.userId
@@ -161,7 +164,7 @@ var logout = function (user) {
  * @return {boolean} True if the AuthToken is still valid.
  */
 var checkAuthTokenValidity = function (authToken) {
-  return authToken.expirationDate < new Date((new Date).getTime() + config.authTokenExpiration * 24 * 60 * 60 * 1000);
+  return authToken.expirationDate > new Date();
 };
 
 module.exports.authenticate = authenticate;
