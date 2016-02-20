@@ -16,6 +16,7 @@
  *   {object} password - Validators for password:
  *     {string} description - Description of the password validator.
  *     {RegExp} regex - Regular expression for the password validator.
+ * @param {number} authTokenExpiration - Number of days after which AuthToken expires.
  */
 var config = {
   port: 8000,
@@ -35,7 +36,8 @@ var config = {
       description: 'Password must be from 6 to 32 alphanumeric and special characters including at least one letter and number.',
       regex: /^(?=.*[a-zA-Z])(?=.*[1-9])[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]{6,32}$/
     }
-  }
+  },
+  authTokenExpiration: 14
 };
 
 module.exports = config;

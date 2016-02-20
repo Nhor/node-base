@@ -2,8 +2,8 @@
 node_modules
 npm-debug.log
 
-# config file
-libs/config.js
+# config file (optionally)
+# libs/config.js
 
 # log files
 logs
