@@ -1,9 +1,9 @@
 'use strict';
 
-describe('config', function () {
+describe('logger', function () {
 
   it('should not fail on require', function () {
-    var lib = require('../../libs/config.js');
+    var lib = require('../../libs/logger.js');
     expect(lib).toBeDefined;
   });
 

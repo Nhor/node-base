@@ -1,9 +1,9 @@
 'use strict';
 
-describe('config', function () {
+describe('unregister', function () {
 
   it('should not fail on require', function () {
-    var lib = require('../../libs/config.js');
+    var lib = require('../../routes/unregister.js');
     expect(lib).toBeDefined;
   });
 
