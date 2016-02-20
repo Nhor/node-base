@@ -19,7 +19,7 @@ server.post('/login', bodyParser.json(), function (req, res) {
 
   auth.login(req.body.username, req.body.password).then(function (authToken) {
     if (!authToken) {
-      res.status(401).send('Invalid username or password.');
+      res.status(401).send({error: 'Invalid username or password.'});
       return;
     }
     res.send({AuthToken: authToken.key});

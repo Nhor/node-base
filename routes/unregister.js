@@ -14,7 +14,7 @@ server.post('/unregister', function (req, res) {
 
     auth.unregister(user).then(function (unregister) {
       if (!unregister) {
-        res.status(400).send('Could not unregister.');
+        res.status(400).send({error: 'Could not unregister.'});
         return;
       }
       res.sendStatus(200);

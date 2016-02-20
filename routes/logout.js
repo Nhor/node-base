@@ -14,7 +14,7 @@ server.post('/logout', function (req, res) {
 
     auth.logout(user).then(function (logout) {
       if (!logout) {
-        res.status(400).send('Could not log out.');
+        res.status(400).send({error: 'Could not log out.'});
         return;
       }
       res.sendStatus(200);

@@ -20,7 +20,7 @@ server.post('/register', bodyParser.json(), function (req, res) {
 
   auth.register(req.body.username, req.body.password, req.body.email).then(function (authToken) {
     if (typeof authToken === 'string') {
-      res.status(400).send(authToken);
+      res.status(400).send({error: authToken});
       return;
     }
     res.send({AuthToken: authToken.key});

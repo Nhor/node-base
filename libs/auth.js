@@ -1,5 +1,6 @@
 'use strict';
 
+var when = require('when');
 var nodefn = require('when/node');
 var bcrypt = nodefn.liftAll(require('bcrypt'));
 var config = require('./config.js');
@@ -47,11 +48,11 @@ var register = function (username, password, email) {
   if (!username.match(config.validators.username.regex)) {
     msg = config.validators.username.description;
     logger.log(msg);
-    return msg;
+    return when.resolve(msg);
   } else if (!password.match(config.validators.password.regex)) {
     msg = config.validators.password.description;
     logger.log(msg);
-    return msg;
+    return when.resolve(msg);
   }
   return User.findOne({
     where: {
