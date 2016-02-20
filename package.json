@@ -1,6 +1,6 @@
 {
   "name": "node-base",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Node.js server app base.",
   "author": "Norbert Mieczkowski <mieczkowskinorbert@gmail.com>",
   "private": true,
