@@ -19,8 +19,10 @@ var authenticate = function (request) {
       logger.log('Authentication failed, no AuthToken with key="' + request.headers.authtoken + '" found.');
       return;
     }
-    if (checkAuthTokenValidity(authToken)) {
-
+    if (!checkAuthTokenValidity(authToken)) {
+      authToken.destroy();
+      logger.log('Authentication failed, AuthToken with key="' + request.headers.authtoken + '" expired.');
+      return;
     }
     return User.findOne({
       where: {
@@ -136,8 +138,6 @@ var login = function (username, password) {
           expirationDate: new Date((new Date()).getTime() + config.authTokenExpiration * 24 * 60 * 60 * 1000),
           userId: user.id
         });
-      }).then(function (authToken) {
-        return authToken;
       });
     });
   });
