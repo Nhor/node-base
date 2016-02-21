@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var logger = require('./logger.js');
 
 /**
@@ -19,21 +20,18 @@ var logger = require('./logger.js');
  *       username: fields.StringField,
  *       email: fields.IntegerField
  *     });
- * {username: 'Got wrong field format, expected an integer.'}
+ * {error: {username: 'Got wrong field format, expected an integer.'}}
  */
 var validate = function (request, fields) {
-  var result = {};
-  var keys = Object.keys(fields);
-  var temp;
-  for (var i = 0; i < keys.length; i++) {
-    temp = fields[keys[i]](request.body[keys[i]]);
-    if (temp) {
-      result[keys[i]] = temp;
-    }
-  }
-  if (Object.keys(result).length) {
-    logger.log(JSON.stringify(result));
-    return result;
+  // use `_.pickBy` to ignore fields with `undefined` values
+  var error = _.pickBy(
+    _.mapValues(_.pickBy(fields), function (value, key) {
+      return value(request.body[key]);
+    })
+  );
+  if (!_.isEmpty(error)) {
+    logger.log(JSON.stringify(error));
+    return {error: error};
   }
 };
 
