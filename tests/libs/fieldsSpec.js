@@ -72,21 +72,21 @@ describe('fields', function () {
     }).error.test).toContain('Got wrong field format');
   });
 
-  it('should not fail on undefined values validation', function () {
+  it('should not fail on optional values validation', function () {
     var req = {body: {test: 'test'}};
     expect(lib.validate(req, {
       test: lib.StringField,
-      test2: undefined
+      test2: lib.optional(lib.StringField)
     })).not.toBeDefined();
 
     req.body.test2 = 123;
     expect(lib.validate(req, {
       test: lib.StringField,
-      test2: lib.StringField
+      test2: lib.optional(lib.StringField)
     }).error.test).not.toBeDefined();
     expect(lib.validate(req, {
       test: lib.StringField,
-      test2: lib.StringField
+      test2: lib.optional(lib.StringField)
     }).error.test2).toContain('Got wrong field format');
   });
 

@@ -25,10 +25,14 @@ var logger = require('./logger.js');
 var validate = function (request, fields) {
   // use `_.pickBy` to ignore fields with `undefined` values
   var error = _.pickBy(
-    _.mapValues(_.pickBy(fields), function (value, key) {
+    _.mapValues(fields, function (value, key) {
+      if (_.isArray(value) && value[1] === 'optional') {
+        return request.body[key] ? value[0](request.body[key]) : undefined
+      }
       return value(request.body[key]);
     })
   );
+
   if (!_.isEmpty(error)) {
     logger.log(JSON.stringify(error));
     return {error: error};
@@ -71,9 +75,19 @@ var EmailField = function (value) {
   }
 };
 
+/**
+ * Mark field as optional.
+ * @param {function} fieldType - Type of the field.
+ * @return {array} Array containing `fieldType` and 'optional' flag.
+ */
+var optional = function (fieldType) {
+  return [fieldType, 'optional'];
+};
+
 module.exports.validate = validate;
 module.exports.StringField = StringField;
 module.exports.StringArrayField = StringArrayField;
 module.exports.IntegerField = IntegerField;
 module.exports.FloatField = FloatField;
 module.exports.EmailField = EmailField;
+module.exports.optional = optional;
