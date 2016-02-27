@@ -15,7 +15,9 @@ var routes = {
   register: require('./routes/register.js'),
   unregister: require('./routes/unregister.js'),
   login: require('./routes/login.js'),
-  logout: require('./routes/logout.js')
+  logout: require('./routes/logout.js'),
+  getProfile: require('./routes/getProfile.js'),
+  editProfile: require('./routes/editProfile.js')
 };
 
 if (!fs.existsSync(__dirname + '/logs')) {
