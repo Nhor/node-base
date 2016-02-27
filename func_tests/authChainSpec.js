@@ -16,7 +16,7 @@ describe('auth chain', function () {
   it('should not fail on register', function (done) {
     var postData = JSON.stringify({
       username: 'test',
-      password: 'test',
+      password: 'test123',
       email: 'test@test.com'
     });
 
@@ -29,17 +29,12 @@ describe('auth chain', function () {
         'Content-Length': postData.length
       }
     }, function (res) {
-      console.log(res.statusCode);
       var data = '';
       res.setEncoding('utf8');
       res.on('data', function (chunk) {
         data += chunk;
       });
       res.on('end', function () {
-        if(res.statusCode === 400) {
-          console.log(data);
-          done();
-        }
         data = JSON.parse(data);
         expect(data.AuthToken).toMatch(dashlessUuidRegex);
         authToken = data.AuthToken;
