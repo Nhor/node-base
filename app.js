@@ -1,6 +1,8 @@
 'use strict';
 
 var fs = require('fs');
+var when = require('when');
+var jimp = require('jimp');
 var config = require('./libs/config.js');
 var server = require('./libs/server.js');
 var database = require('./libs/database.js');
@@ -24,7 +26,18 @@ if (!fs.existsSync(__dirname + '/logs')) {
   fs.mkdirSync(__dirname + '/logs')
 }
 
-database.sync().then(function () {
+jimp.read(__dirname + '/public/users/default/avatar/avatar_base.png').then(function(avatar) {
+  return when.all([
+    avatar
+      .resize(config.userAvatar.size.width, config.userAvatar.size.height)
+      .write(__dirname + '/public/users/default/avatar/avatar.png'),
+    avatar
+      .resize(config.userAvatar.thumbnailSize.width, config.userAvatar.thumbnailSize.height)
+      .write(__dirname + '/public/users/default/avatar/avatar_thumbnail.png')
+  ]);
+}).then(function () {
+  return database.sync();
+}).then(function () {
   server.listen(config.port, function () {
     logger.log("Server listening on port: " + this.address().port);
   });

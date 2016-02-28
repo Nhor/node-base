@@ -25,6 +25,18 @@ var User = database.define('user', {
     field: 'email',
     type: Sequelize.STRING,
     allowNull: false
+  },
+  avatar: {
+    field: 'avatar',
+    type: Sequelize.STRING,
+    allowNull: false,
+    defaultValue: 'users/default/avatar.png'
+  },
+  avatarThumbnail: {
+    field: 'avatar_thumbnail',
+    type: Sequelize.STRING,
+    allowNull: false,
+    defaultValue: 'users/default/avatar_thumbnail.png'
   }
 }, {
   timestamps: true,

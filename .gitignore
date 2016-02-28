@@ -8,5 +8,12 @@ npm-debug.log
 # log files
 logs
 
-# public files
-public
+# public files excluding avatar_base.png
+/public/*
+!/public/users/
+/public/users/*
+!/public/users/default
+/public/users/default/*
+!/public/users/default/avatar
+/public/users/default/avatar/*
+!/public/users/default/avatar/avatar_base.png
