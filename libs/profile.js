@@ -71,8 +71,7 @@ var checkEmail = function (args) {
   var email = args.email.email.toLowerCase();
   return User.findOne({
     where: {
-      email: email,
-      deleted: null
+      email: email
     }
   }).then(function (foundUser) {
     if (foundUser) {

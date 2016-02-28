@@ -56,8 +56,7 @@ var register = function (username, password, email) {
   }
   return User.findOne({
     where: {
-      username: {$iLike: username},
-      deleted: null
+      username: {$iLike: username}
     }
   }).then(function (user) {
     if (user) {
@@ -110,7 +109,7 @@ var unregister = function (user) {
  * @return {AuthToken} Authentication token.
  */
 var login = function (username, password) {
-  var queryParams = {where: {deleted: null}};
+  var queryParams = {where: {}};
   if (username.indexOf('@') > 0) {
     queryParams.where.email = username.toLowerCase();
   } else {

@@ -28,10 +28,9 @@ var User = database.define('user', {
   }
 }, {
   timestamps: true,
-  paranoid: true,
+  paranoid: false,
   createdAt: 'created',
-  updatedAt: 'edited',
-  deletedAt: 'deleted'
+  updatedAt: 'edited'
 });
 
 module.exports = User;
