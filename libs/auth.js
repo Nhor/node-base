@@ -21,9 +21,9 @@ var authenticate = function (request) {
       return;
     }
     if (!checkAuthTokenValidity(authToken)) {
-      authToken.destroy();
-      logger.log('Authentication failed, AuthToken with key="' + request.headers.authtoken + '" expired.');
-      return;
+      return authToken.destroy().then(function (rows) {
+        logger.log('Authentication failed, AuthToken with key="' + request.headers.authtoken + '" expired.');
+      });
     }
     return User.findOne({
       where: {
@@ -96,9 +96,10 @@ var unregister = function (user) {
     if (!res) {
       return;
     }
-    user.destroy();
-    logger.log('Successfully unregistered user with username="' + user.username + '".');
-    return true;
+    return user.destroy().then(function (rows) {
+      logger.log('Successfully unregistered user with username="' + user.username + '".');
+      return true;
+    });
   });
 };
 
@@ -131,8 +132,10 @@ var login = function (username, password) {
           if (checkAuthTokenValidity(token)) {
             return token;
           }
-          token.destroy();
+          return token.destroy();
         }
+        return when.resolve();
+      }).then(function () {
         return AuthToken.create({
           key: uuid.v4(),
           expirationDate: new Date((new Date()).getTime() + config.authTokenExpiration * 24 * 60 * 60 * 1000),
@@ -151,8 +154,10 @@ var login = function (username, password) {
 var logout = function (user) {
   return AuthToken.findOne({where: {userId: user.id}}).then(function (authToken) {
     if (authToken) {
-      authToken.destroy();
+      return authToken.destroy();
     }
+    return when.resolve();
+  }).then(function () {
     logger.log('Successfully logged out user with username="' + user.username + '".');
     return true;
   });
