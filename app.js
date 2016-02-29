@@ -29,10 +29,10 @@ if (!fs.existsSync(__dirname + '/logs')) {
 jimp.read(__dirname + '/public/users/default/avatar/avatar_base.png').then(function(avatar) {
   return when.all([
     avatar
-      .resize(config.userAvatar.size.width, config.userAvatar.size.height)
+      .resize(config.userAvatarImage.size.width, config.userAvatarImage.size.height)
       .write(__dirname + '/public/users/default/avatar/avatar.png'),
     avatar
-      .resize(config.userAvatar.thumbnailSize.width, config.userAvatar.thumbnailSize.height)
+      .resize(config.userAvatarImage.thumbnailSize.width, config.userAvatarImage.thumbnailSize.height)
       .write(__dirname + '/public/users/default/avatar/avatar_thumbnail.png')
   ]);
 }).then(function () {
