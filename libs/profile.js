@@ -68,7 +68,7 @@ var changePassword = function (args) {
 /**
  * Check if the specified email can be changed for a specific user.
  * @param {object} args - Dict containing `email` with:
- *   {User} user - User for whom the password will be changed.
+ *   {User} user - User for whom the email will be changed.
  *   {string} email - New email.
  */
 var checkEmail = function (args) {
@@ -86,9 +86,9 @@ var checkEmail = function (args) {
 };
 
 /**
- * Check if the specified email can be changed for a specific user.
+ * Change email for a specific user.
  * @param {object} args - Dict containing `email` with:
- *   {User} user - User for whom the password will be changed.
+ *   {User} user - User for whom the email will be changed.
  *   {string} email - New email.
  */
 var changeEmail = function (args) {
@@ -99,8 +99,39 @@ var changeEmail = function (args) {
   });
 };
 
+/**
+ * Check if the specified avatar can be changed for a specific user.
+ * @param {object} args - Dict containing `avatar` with:
+ *   {User} user - User for whom the avatar will be changed.
+ *   {string} avatar - New avatar path.
+ */
+var checkAvatar = function (args) {
+  var avatar = args.avatar.avatar;
+  if (!avatar) {
+    return when.reject();
+  }
+  return when.resolve();
+};
+
+/**
+ * Change avatar for a specific user.
+ * @param {object} args - Dict containing `avatar` with:
+ *   {User} user - User for whom the avatar will be changed.
+ *   {string} avatar - New avatar path.
+ */
+var changeAvatar = function (args) {
+  var user = args.avatar.user;
+  var avatar = args.avatar.avatar;
+  var avatarThumbnail = args.avatar.avatar;
+  return user.update({avatar: avatar, avatarThumbnail: avatarThumbnail}).then(function (user) {
+    logger.log('Successfully changed avatar for user with username="' + user.username + '".');
+  });
+};
+
 module.exports.get = get;
 module.exports.checkPassword = checkPassword;
 module.exports.changePassword = changePassword;
 module.exports.checkEmail = checkEmail;
 module.exports.changeEmail = changeEmail;
+module.exports.checkAvatar = checkAvatar;
+module.exports.changeAvatar = changeAvatar;
