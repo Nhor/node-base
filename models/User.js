@@ -30,13 +30,13 @@ var User = database.define('user', {
     field: 'avatar',
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: 'users/default/avatar.png'
+    defaultValue: 'public/users/default/avatar.png'
   },
   avatarThumbnail: {
     field: 'avatar_thumbnail',
     type: Sequelize.STRING,
     allowNull: false,
-    defaultValue: 'users/default/avatar_thumbnail.png'
+    defaultValue: 'public/users/default/avatar_thumbnail.png'
   }
 }, {
   timestamps: true,
