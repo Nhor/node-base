@@ -79,7 +79,12 @@ describe('auth chain', function () {
       });
       res.on('end', function () {
         data = JSON.parse(data);
-        expect(data).toEqual({username: 'test', email: 'test@test.com'});
+        expect(data).toEqual({
+          username: 'test',
+          email: 'test@test.com',
+          avatar: 'public/users/default/avatar/avatar.png',
+          avatarThumbnail: 'public/users/default/avatar/avatar_thumbnail.png'
+        });
         done();
       });
     });
