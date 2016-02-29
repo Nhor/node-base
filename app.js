@@ -26,7 +26,7 @@ if (!fs.existsSync(__dirname + '/logs')) {
   fs.mkdirSync(__dirname + '/logs')
 }
 
-jimp.read(__dirname + '/public/users/default/avatar/avatar_base.png').then(function(avatar) {
+jimp.read(__dirname + '/public/users/default/avatar/avatar_base.png').then(function (avatar) {
   return when.all([
     avatar
       .resize(config.userAvatarImage.size.width, config.userAvatarImage.size.height)
