@@ -17,12 +17,16 @@ var get = function (requestingUser, requestedUserId) {
   if (requestingUser.id === requestedUserId) {
     return when.resolve({
       username: requestingUser.username,
-      email: requestingUser.email
+      email: requestingUser.email,
+      avatar: requestingUser.avatar,
+      avatarThumbnail: requestingUser.avatarThumbnail
     });
   }
   return User.findOne({where: {id: requestedUserId}}).then(function (requestedUser) {
     return {
-      username: requestedUser.username
+      username: requestedUser.username,
+      avatar: requestedUser.avatar,
+      avatarThumbnail: requestedUser.avatarThumbnail
     };
   });
 };
