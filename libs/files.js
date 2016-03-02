@@ -31,7 +31,7 @@ var validate = function (request, files) {
 
   var error = {};
   return when.promise(function (resolve, reject) {
-    _.map(files, function (fileName, expectedFileType) {
+    _.map(files, function (expectedFileType, fileName) {
       return function () {
         if (_.isArray(expectedFileType) && expectedFileType[1] === 'optional') {
           return request.files[fileName] ?
