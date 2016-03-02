@@ -14,13 +14,13 @@ var fileType = require('file-type');
  *         {object} If the validation failed - dict containing error messages for incorrect files.
  * @example
  * >>> files.validate(req, {
- *       avatar: files.ImageField,
+ *       avatar: files.ImageFile,
  *     }).then(function(res) {});
  * {}
  * @example
  * >>> files.validate(req, {
- *       avatar: files.ImageField,
- *       audio: files.BmpField,
+ *       avatar: files.ImageFile,
+ *       audio: files.BmpFile,
  *     }).then(function(res) {});
  * {error: {audio: 'Got wrong file format, expected BMP.'}}
  */
