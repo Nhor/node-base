@@ -47,7 +47,10 @@ var validate = function (request, files) {
           var obj = {};
           obj[fileName] = res;
           error = _.mergeWith(error, obj);
+          return files.rm(request.files[fileName].path);
         }
+        return when.resolve();
+      }).then(function () {
         _.unset(files, fileName);
         if (_.isEmpty(files)) {
           return resolve(_.isEmpty(_.pickBy(error)) ? undefined : {error: _.pickBy(error)});
@@ -130,3 +133,5 @@ module.exports.optional = optional;
 module.exports.mkdir = mkdir;
 module.exports.mv = mv;
 module.exports.rm = rm;
+npm
+i
