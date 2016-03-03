@@ -105,7 +105,7 @@ var mkdir = function(path) {
 };
 
 /**
- * Move file to specified location.
+ * Rename file or move it to specified location.
  * @param {string} currentFilePath - Current path of the file.
  * @param {string} newFilePath - New path for the file.
  */
