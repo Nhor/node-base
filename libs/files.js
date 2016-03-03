@@ -2,8 +2,9 @@
 
 var _ = require('lodash');
 var when = require('when');
+var nodefn = require('when/node');
 var parallel = require('when/parallel');
-var readChunk = require('read-chunk');
+var readChunk = nodefn.lift(require('read-chunk'));
 var fileType = require('file-type');
 
 /**
@@ -76,16 +77,10 @@ var ImageFile = function (filePath) {
 };
 
 var checkFileType = function (filePath, expectedFileType) {
-  return when.promise(function (resolve, reject) {
-    readChunk(filePath, 0, 262, function (err, buffer) {
-      if (err) {
-        return reject(err);
-      }
-      if (!fileType(buffer) || fileType(buffer).ext !== expectedFileType) {
-        return resolve('Got wrong file format, expected ' + expectedFileType.toUpperCase() + '.');
-      }
-      return resolve();
-    });
+  return readChunk(filePath, 0, 262).then(function (buffer) {
+    if (!fileType(buffer) || fileType(buffer).ext !== expectedFileType) {
+      return 'Got wrong file format, expected ' + expectedFileType.toUpperCase() + '.';
+    }
   });
 };
 
