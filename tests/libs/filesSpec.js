@@ -91,4 +91,42 @@ describe('files', function () {
     });
   }, 1000);
 
+  it('should not fail on mkdir', function (done) {
+    var fs = require('fs');
+    var dir = __dirname + '/test/test2';
+
+    lib.mkdir(dir).then(function () {
+      expect(fs.existsSync(dir)).toBeTruthy();
+      fs.rmdirSync(dir);
+      fs.rmdirSync(__dirname + '/test');
+      done();
+    });
+  }, 1000);
+
+  it('should not fail on mv', function (done) {
+    var fs = require('fs');
+    var oldPath = __dirname + '/test.txt';
+    var newPath = __dirname + '/../test.txt';
+
+    fs.openSync(oldPath, 'w');
+    lib.mv(oldPath, newPath).then(function () {
+      expect(fs.existsSync(newPath)).toBeTruthy();
+      fs.unlinkSync(newPath);
+      done();
+    });
+  }, 1000);
+
+  it('should not fail on rm', function (done) {
+    var fs = require('fs');
+    var dir = __dirname + '/test';
+    var file = dir + '/test.txt';
+
+    fs.mkdirSync(dir);
+    fs.openSync(file, 'w');
+    lib.rm(dir).then(function () {
+      expect(fs.existsSync(dir)).toBeFalsy();
+      done();
+    });
+  }, 1000);
+
 });
