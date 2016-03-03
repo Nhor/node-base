@@ -3,7 +3,9 @@
 var when = require('when');
 var nodefn = require('when/node');
 var bcrypt = nodefn.liftAll(require('bcrypt'));
+var jimp = require('jimp');
 var config = require('../libs/config.js');
+var uuid = require('../libs/uuid.js');
 var logger = require('../libs/logger.js');
 var User = require('../models/User.js');
 
@@ -122,8 +124,23 @@ var checkAvatar = function (args) {
 var changeAvatar = function (args) {
   var user = args.avatar.user;
   var avatar = args.avatar.avatar;
-  var avatarThumbnail = args.avatar.avatar;
-  return user.update({avatar: avatar, avatarThumbnail: avatarThumbnail}).then(function (user) {
+
+  var fileName = uuid.v4();
+  var avatarPath = 'public/users/' + user.username + '/avatar/' + fileName + '.png';
+  var avatarThumbnailPath = 'public/users/' + user.username + '/avatar/' + fileName + '_thumbnail.png';
+
+  return jimp.read(avatar.path).then(function (avatar) {
+    return when.all([
+      avatar
+        .resize(config.userAvatarImage.size.width, config.userAvatarImage.size.height)
+        .write(__dirname + '/' + avatarPath),
+      avatar
+        .resize(config.userAvatarImage.thumbnailSize.width, config.userAvatarImage.thumbnailSize.height)
+        .write(__dirname + '/' + avatarThumbnailPath)
+    ]);
+  }).then(function () {
+    return user.update({avatar: avatarPath, avatarThumbnail: avatarThumbnailPath});
+  }).then(function (user) {
     logger.log('Successfully changed avatar for user with username="' + user.username + '".');
   });
 };
