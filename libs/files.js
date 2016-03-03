@@ -100,7 +100,7 @@ var optional = function (expectedFileType) {
  * Create specified directory.
  * @param {string} path - Path of the directory to create.
  */
-var mkdir = function(path) {
+var mkdir = function (path) {
   return nodefn.lift(mkdirp)(path, {});
 };
 
@@ -109,7 +109,7 @@ var mkdir = function(path) {
  * @param {string} currentFilePath - Current path of the file.
  * @param {string} newFilePath - New path for the file.
  */
-var mv = function(currentFilePath, newFilePath) {
+var mv = function (currentFilePath, newFilePath) {
   return nodefn.lift(fs.rename)(currentFilePath, newFilePath);
 };
 
@@ -117,7 +117,7 @@ var mv = function(currentFilePath, newFilePath) {
  * Remove specified file or directory.
  * @param {string} path - Path of the file or directory.
  */
-var rm = function(path) {
+var rm = function (path) {
   return nodefn.lift(rimraf)(path, {});
 };
 
