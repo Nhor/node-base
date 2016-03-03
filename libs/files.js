@@ -47,10 +47,7 @@ var validate = function (request, files) {
           var obj = {};
           obj[fileName] = res;
           error = _.mergeWith(error, obj);
-          return files.rm(request.files[fileName].path);
         }
-        return when.resolve();
-      }).then(function () {
         _.unset(files, fileName);
         if (_.isEmpty(files)) {
           return resolve(_.isEmpty(_.pickBy(error)) ? undefined : {error: _.pickBy(error)});
@@ -101,18 +98,18 @@ var optional = function (expectedFileType) {
 
 /**
  * Create specified directory.
- * @param {string} path - Path of the directory to create.
+ * @param {string{
  */
-var mkdir = function (path) {
+var mkdir = function(path) {
   return nodefn.lift(mkdirp)(path, {});
 };
 
 /**
- * Rename file or move it to specified location.
+ * Move file to specified location.
  * @param {string} currentFilePath - Current path of the file.
  * @param {string} newFilePath - New path for the file.
  */
-var mv = function (currentFilePath, newFilePath) {
+var mv = function(currentFilePath, newFilePath) {
   return nodefn.lift(fs.rename)(currentFilePath, newFilePath);
 };
 
@@ -120,7 +117,7 @@ var mv = function (currentFilePath, newFilePath) {
  * Remove specified file or directory.
  * @param {string} path - Path of the file or directory.
  */
-var rm = function (path) {
+var rm = function(path) {
   return nodefn.lift(rimraf)(path, {});
 };
 
@@ -133,5 +130,3 @@ module.exports.optional = optional;
 module.exports.mkdir = mkdir;
 module.exports.mv = mv;
 module.exports.rm = rm;
-npm
-i
