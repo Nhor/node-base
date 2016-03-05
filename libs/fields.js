@@ -34,7 +34,7 @@ var validate = function (request, fields) {
   );
 
   if (!_.isEmpty(error)) {
-    logger.log(JSON.stringify(error));
+    logger.info(JSON.stringify(error));
     return {error: error};
   }
 };

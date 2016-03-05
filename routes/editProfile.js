@@ -83,7 +83,7 @@ server.put('/edit-profile', function (req, res) {
               obj[_.keys(changes)[index]] = elem;
               return _.mergeWith(result, obj);
             }, {});
-            logger.log(JSON.stringify(error));
+            logger.info(JSON.stringify(error));
             return res.status(400).send({error: error});
           }
 
@@ -101,7 +101,7 @@ server.put('/edit-profile', function (req, res) {
     });
 
   }).catch(function (err) {
-    logger.log(err);
+    logger.error(err);
     return res.sendStatus(500);
   });
 

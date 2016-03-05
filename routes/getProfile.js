@@ -16,12 +16,12 @@ server.get('/get-profile', function (req, res) {
     profile.get(user, user.id).then(function (userInfo) {
       res.send(userInfo);
     }).catch(function (err) {
-      logger.log(err);
+      logger.error(err);
       res.sendStatus(500);
     });
 
   }).catch(function (err) {
-    logger.log(err);
+    logger.error(err);
     res.sendStatus(500);
   });
 

@@ -18,12 +18,12 @@ var authenticate = function (request) {
   var queryParams = {where: {key: request.headers.authtoken}};
   return AuthToken.findOne(queryParams).then(function (authToken) {
     if (!authToken) {
-      logger.log('Authentication failed, no AuthToken with key="' + request.headers.authtoken + '" found.');
+      logger.info('Authentication failed, no AuthToken with key="' + request.headers.authtoken + '" found.');
       return;
     }
     if (!checkAuthTokenValidity(authToken)) {
       return authToken.destroy().then(function (rows) {
-        logger.log('Authentication failed, AuthToken with key="' + request.headers.authtoken + '" expired.');
+        logger.info('Authentication failed, AuthToken with key="' + request.headers.authtoken + '" expired.');
       });
     }
     return User.findOne({
@@ -31,7 +31,7 @@ var authenticate = function (request) {
         id: authToken.userId
       }
     }).then(function (user) {
-      logger.log('Authentication successful for use with username="' + user.username + '".');
+      logger.info('Authentication successful for use with username="' + user.username + '".');
       return user;
     });
   });
@@ -48,11 +48,11 @@ var register = function (username, password, email) {
   var msg;
   if (!username.match(config.validators.username.regex)) {
     msg = config.validators.username.description;
-    logger.log(msg);
+    logger.info(msg);
     return when.resolve(msg);
   } else if (!password.match(config.validators.password.regex)) {
     msg = config.validators.password.description;
-    logger.log(msg);
+    logger.info(msg);
     return when.resolve(msg);
   }
   return User.findOne({
@@ -62,13 +62,13 @@ var register = function (username, password, email) {
   }).then(function (user) {
     if (user) {
       msg = 'User with username="' + username + '" already exists.';
-      logger.log(msg);
+      logger.info(msg);
       return msg;
     }
     return User.findOne({where: {email: email.toLowerCase()}}).then(function (user) {
       if (user) {
         msg = 'User with email="' + email.toLowerCase() + '" already exists.';
-        logger.log(msg);
+        logger.info(msg);
         return msg;
       }
       return bcrypt.genSalt(10).then(function (salt) {
@@ -81,7 +81,7 @@ var register = function (username, password, email) {
         });
       }).then(function (user) {
         return files.mkdir(__dirname + '/../public/users/' + user.id + '/avatar').then(function () {
-          logger.log('Successfully registered user with username="' + user.username + '".');
+          logger.info('Successfully registered user with username="' + user.username + '".');
           return login(user.username, password);
         });
       });
@@ -102,7 +102,7 @@ var unregister = function (user) {
     return user.destroy().then(function (rows) {
       return files.rm(__dirname + '/../public/users/' + user.id);
     }).then(function () {
-      logger.log('Successfully unregistered user with username="' + user.username + '".');
+      logger.info('Successfully unregistered user with username="' + user.username + '".');
       return true;
     });
   });
@@ -123,15 +123,15 @@ var login = function (username, password) {
   }
   return User.findOne(queryParams).then(function (user) {
     if (!user) {
-      logger.log('User with username="' + username + '" does not exist.');
+      logger.info('User with username="' + username + '" does not exist.');
       return;
     }
     return bcrypt.compare(password, user.password).then(function (res) {
       if (!res) {
-        logger.log('Password does not match for user with username="' + user.username + '".');
+        logger.info('Password does not match for user with username="' + user.username + '".');
         return;
       }
-      logger.log('Successfully logged in user with username="' + user.username + '".');
+      logger.info('Successfully logged in user with username="' + user.username + '".');
       return AuthToken.findOne({where: {userId: user.id}}).then(function (token) {
         if (token) {
           if (checkAuthTokenValidity(token)) {
@@ -163,7 +163,7 @@ var logout = function (user) {
     }
     return when.resolve();
   }).then(function () {
-    logger.log('Successfully logged out user with username="' + user.username + '".');
+    logger.info('Successfully logged out user with username="' + user.username + '".');
     return true;
   });
 };

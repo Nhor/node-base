@@ -43,7 +43,7 @@ var checkPassword = function (args) {
   var password = args.password.password;
   if (!password.match(config.validators.password.regex)) {
     var msg = config.validators.password.description;
-    logger.log(msg);
+    logger.info(msg);
     return when.resolve(msg);
   }
   return when.resolve();
@@ -63,7 +63,7 @@ var changePassword = function (args) {
   }).then(function (hash) {
     return user.update({password: hash});
   }).then(function (user) {
-    logger.log('Successfully changed password for user with username="' + user.username + '".');
+    logger.info('Successfully changed password for user with username="' + user.username + '".');
   });
 };
 
@@ -81,7 +81,7 @@ var checkEmail = function (args) {
     }
   }).then(function (foundUser) {
     if (foundUser) {
-      logger.log('User with email="' + email + '" already exist.');
+      logger.info('User with email="' + email + '" already exist.');
       return 'This email is already in use.';
     }
   });
@@ -97,7 +97,7 @@ var changeEmail = function (args) {
   var user = args.email.user;
   var email = args.email.email.toLowerCase();
   return user.update({email: email}).then(function (user) {
-    logger.log('Successfully changed email for user with username="' + user.username + '".');
+    logger.info('Successfully changed email for user with username="' + user.username + '".');
   });
 };
 
@@ -141,7 +141,7 @@ var changeAvatar = function (args) {
   }).then(function () {
     return user.update({avatar: avatarPath, avatarThumbnail: avatarThumbnailPath});
   }).then(function (user) {
-    logger.log('Successfully changed avatar for user with username="' + user.username + '".');
+    logger.info('Successfully changed avatar for user with username="' + user.username + '".');
   });
 };
 

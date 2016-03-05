@@ -38,8 +38,8 @@ files.mkdir(__dirname + '/logs').then(function () {
   return database.sync();
 }).then(function () {
   server.listen(config.port, function () {
-    logger.log("Server listening on port: " + this.address().port);
+    logger.info("Server listening on port: " + this.address().port);
   });
 }).catch(function (err) {
-  logger.log(err);
+  logger.error(err);
 });

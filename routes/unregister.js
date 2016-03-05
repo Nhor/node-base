@@ -19,12 +19,12 @@ server.post('/unregister', function (req, res) {
       }
       res.sendStatus(200);
     }).catch(function (err) {
-      logger.log(err);
+      logger.error(err);
       res.sendStatus(500);
     });
 
   }).catch(function (err) {
-    logger.log(err);
+    logger.error(err);
     res.sendStatus(500);
   });
 

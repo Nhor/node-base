@@ -24,7 +24,7 @@ server.post('/login', bodyParser.json(), function (req, res) {
     }
     res.send({AuthToken: authToken.key});
   }).catch(function (err) {
-    logger.log(err);
+    logger.error(err);
     res.sendStatus(500);
   });
 
