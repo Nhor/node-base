@@ -14,12 +14,12 @@ var profile = require('../libs/profile.js');
 
 server.put('/edit-profile', function (req, res) {
 
-  auth.authenticate(req).then(function (user) {
+  return auth.authenticate(req).then(function (user) {
     if (!user) {
       return res.sendStatus(403);
     }
 
-    (function () {
+    return (function () {
       if (req.headers['content-type'] === 'application/json') {
         return nodefn.lift(bodyParser.json())(req, res).then(function () {
           req.files = {};
@@ -37,16 +37,17 @@ server.put('/edit-profile', function (req, res) {
         email: fields.optional(fields.EmailField)
       });
       if (validation) {
+        logger.warn(JSON.stringify(validation));
         return res.status(400).send(validation);
       }
-
-      files.validate(req, {
+      return files.validate(req, {
         avatar: files.optional(files.ImageFile)
       }).then(function (validation) {
         if (validation) {
           _.map(validation.error, function (file) {
             files.rm(file.path);
           });
+          logger.warn(JSON.stringify(validation));
           return res.status(400).send(validation);
         }
 
@@ -83,17 +84,16 @@ server.put('/edit-profile', function (req, res) {
               obj[_.keys(changes)[index]] = elem;
               return _.mergeWith(result, obj);
             }, {});
-            logger.info(JSON.stringify(error));
+            logger.warn(JSON.stringify(error));
             return res.status(400).send({error: error});
           }
-
-          parallel(
+          return parallel(
             _.map(changes, 'change'),
             _.mapValues(changes, 'args')
           ).then(function (descriptors) {
+            logger.info('Successfully changed ' + _.keys(changes).join(', ') + ' for user with username="' + user.username + '".');
             return res.sendStatus(200);
           });
-
         });
 
       });

@@ -5,7 +5,6 @@ var nodefn = require('when/node');
 var bcrypt = nodefn.liftAll(require('bcrypt'));
 var config = require('./config.js');
 var files = require('./files.js');
-var logger = require('./logger.js');
 var uuid = require('./uuid.js');
 var AuthToken = require('../models/AuthToken.js');
 var User = require('../models/User.js');
@@ -18,20 +17,16 @@ var authenticate = function (request) {
   var queryParams = {where: {key: request.headers.authtoken}};
   return AuthToken.findOne(queryParams).then(function (authToken) {
     if (!authToken) {
-      logger.info('Authentication failed, no AuthToken with key="' + request.headers.authtoken + '" found.');
       return;
     }
     if (!checkAuthTokenValidity(authToken)) {
-      return authToken.destroy().then(function (rows) {
-        logger.info('Authentication failed, AuthToken with key="' + request.headers.authtoken + '" expired.');
-      });
+      return authToken.destroy();
     }
     return User.findOne({
       where: {
         id: authToken.userId
       }
     }).then(function (user) {
-      logger.info('Authentication successful for use with username="' + user.username + '".');
       return user;
     });
   });
@@ -47,13 +42,9 @@ var authenticate = function (request) {
 var register = function (username, password, email) {
   var msg;
   if (!username.match(config.validators.username.regex)) {
-    msg = config.validators.username.description;
-    logger.info(msg);
-    return when.resolve(msg);
+    return when.resolve(config.validators.username.description);
   } else if (!password.match(config.validators.password.regex)) {
-    msg = config.validators.password.description;
-    logger.info(msg);
-    return when.resolve(msg);
+    return when.resolve(config.validators.password.description);
   }
   return User.findOne({
     where: {
@@ -61,15 +52,11 @@ var register = function (username, password, email) {
     }
   }).then(function (user) {
     if (user) {
-      msg = 'User with username="' + username + '" already exists.';
-      logger.info(msg);
-      return msg;
+      return 'User with username="' + username + '" already exists.';
     }
     return User.findOne({where: {email: email.toLowerCase()}}).then(function (user) {
       if (user) {
-        msg = 'User with email="' + email.toLowerCase() + '" already exists.';
-        logger.info(msg);
-        return msg;
+        return 'User with email="' + email.toLowerCase() + '" already exists.';
       }
       return bcrypt.genSalt(10).then(function (salt) {
         return bcrypt.hash(password, salt);
@@ -81,7 +68,6 @@ var register = function (username, password, email) {
         });
       }).then(function (user) {
         return files.mkdir(__dirname + '/../public/users/' + user.id + '/avatar').then(function () {
-          logger.info('Successfully registered user with username="' + user.username + '".');
           return login(user.username, password);
         });
       });
@@ -102,7 +88,6 @@ var unregister = function (user) {
     return user.destroy().then(function (rows) {
       return files.rm(__dirname + '/../public/users/' + user.id);
     }).then(function () {
-      logger.info('Successfully unregistered user with username="' + user.username + '".');
       return true;
     });
   });
@@ -123,15 +108,12 @@ var login = function (username, password) {
   }
   return User.findOne(queryParams).then(function (user) {
     if (!user) {
-      logger.info('User with username="' + username + '" does not exist.');
       return;
     }
     return bcrypt.compare(password, user.password).then(function (res) {
       if (!res) {
-        logger.info('Password does not match for user with username="' + user.username + '".');
         return;
       }
-      logger.info('Successfully logged in user with username="' + user.username + '".');
       return AuthToken.findOne({where: {userId: user.id}}).then(function (token) {
         if (token) {
           if (checkAuthTokenValidity(token)) {
@@ -163,7 +145,6 @@ var logout = function (user) {
     }
     return when.resolve();
   }).then(function () {
-    logger.info('Successfully logged out user with username="' + user.username + '".');
     return true;
   });
 };

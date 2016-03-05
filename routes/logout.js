@@ -6,26 +6,23 @@ var logger = require('../libs/logger.js');
 
 server.post('/logout', function (req, res) {
 
-  auth.authenticate(req).then(function (user) {
+  return auth.authenticate(req).then(function (user) {
     if (!user) {
-      res.sendStatus(403);
-      return;
+      logger.warn('Authentication failed for AuthToken with key="' + req.headers.authtoken + '".');
+      return res.sendStatus(403);
     }
 
-    auth.logout(user).then(function (logout) {
+    return auth.logout(user).then(function (logout) {
       if (!logout) {
-        res.status(400).send({error: 'Could not log out.'});
-        return;
+        logger.warn(JSON.stringify({error: 'Logout failed for user with username="' + user.username + '".'}));
+        return res.status(400).send({error: 'Logout failed.'});
       }
-      res.sendStatus(200);
-    }).catch(function (err) {
-      logger.error(err);
-      res.sendStatus(500);
+      return res.sendStatus(200);
     });
 
   }).catch(function (err) {
     logger.error(err);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   });
 
 });

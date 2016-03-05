@@ -14,19 +14,19 @@ server.post('/register', bodyParser.json(), function (req, res) {
     email: fields.EmailField
   });
   if (validation) {
-    res.status(400).send(validation);
-    return;
+    logger.warn(JSON.stringify(validation));
+    return res.status(400).send(validation);
   }
 
-  auth.register(req.body.username, req.body.password, req.body.email).then(function (authToken) {
+  return auth.register(req.body.username, req.body.password, req.body.email).then(function (authToken) {
     if (typeof authToken === 'string') {
-      res.status(400).send({error: authToken});
-      return;
+      logger.warn(JSON.stringify({error: authToken}));
+      return res.status(400).send({error: authToken});
     }
-    res.send({AuthToken: authToken.key});
+    return res.send({AuthToken: authToken.key});
   }).catch(function (err) {
     logger.error(err);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   });
 
 });

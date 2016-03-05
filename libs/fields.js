@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var logger = require('./logger.js');
 
 /**
  * Validate specified fields for the correct formats.
@@ -34,7 +33,6 @@ var validate = function (request, fields) {
   );
 
   if (!_.isEmpty(error)) {
-    logger.info(JSON.stringify(error));
     return {error: error};
   }
 };

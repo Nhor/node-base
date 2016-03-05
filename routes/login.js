@@ -13,19 +13,20 @@ server.post('/login', bodyParser.json(), function (req, res) {
     password: fields.StringField
   });
   if (validation) {
-    res.status(400).send(validation);
-    return;
+    logger.warn(JSON.stringify(validation));
+    return res.status(400).send(validation);
   }
 
-  auth.login(req.body.username, req.body.password).then(function (authToken) {
+  return auth.login(req.body.username, req.body.password).then(function (authToken) {
     if (!authToken) {
-      res.status(401).send({error: 'Invalid username or password.'});
-      return;
+      logger.warn(JSON.stringify({error: 'Invalid username or password.'}));
+      return res.status(401).send({error: 'Invalid username or password.'});
     }
-    res.send({AuthToken: authToken.key});
+    logger.info('Successfully logged in user with username="' + req.body.username + '".');
+    return res.send({AuthToken: authToken.key});
   }).catch(function (err) {
     logger.error(err);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   });
 
 });

@@ -7,22 +7,20 @@ var profile = require('../libs/profile.js');
 
 server.get('/get-profile', function (req, res) {
 
-  auth.authenticate(req).then(function (user) {
+  return auth.authenticate(req).then(function (user) {
     if (!user) {
-      res.sendStatus(403);
-      return;
+      logger.warn('Authentication failed for AuthToken with key="' + req.headers.authtoken + '".');
+      return res.sendStatus(403);
     }
 
-    profile.get(user, user.id).then(function (userInfo) {
-      res.send(userInfo);
-    }).catch(function (err) {
-      logger.error(err);
-      res.sendStatus(500);
+    return profile.get(user, user.id).then(function (userInfo) {
+      logger.info('Successfully got profile of user with username="' + userInfo.username + '" for user with username="' + user.username + '"');
+      return res.send(userInfo);
     });
 
   }).catch(function (err) {
     logger.error(err);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   });
 
 });

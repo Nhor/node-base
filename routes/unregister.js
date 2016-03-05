@@ -6,26 +6,23 @@ var logger = require('../libs/logger.js');
 
 server.post('/unregister', function (req, res) {
 
-  auth.authenticate(req).then(function (user) {
+  return auth.authenticate(req).then(function (user) {
     if (!user) {
-      res.sendStatus(403);
-      return;
+      logger.warn('Authentication failed for AuthToken with key="' + req.headers.authtoken + '".');
+      return res.sendStatus(403);
     }
 
-    auth.unregister(user).then(function (unregister) {
+    return auth.unregister(user).then(function (unregister) {
       if (!unregister) {
-        res.status(400).send({error: 'Could not unregister.'});
-        return;
+        logger.warn(JSON.stringify({error: 'Unregistration failed for user with username="' + user.username + '".'}));
+        return res.status(400).send({error: 'Unregistration failed.'});
       }
-      res.sendStatus(200);
-    }).catch(function (err) {
-      logger.error(err);
-      res.sendStatus(500);
+      return res.sendStatus(200);
     });
 
   }).catch(function (err) {
     logger.error(err);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   });
 
 });
