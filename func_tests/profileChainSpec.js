@@ -37,7 +37,7 @@ describe('auth chain', function () {
     var req = http.request({
       port: config.port,
       method: 'PUT',
-      path: '/edit-profile',
+      path: '/user',
       headers: {
         'AuthToken': authToken,
         'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ describe('auth chain', function () {
     var req = http.request({
       port: config.port,
       method: 'GET',
-      path: '/get-profile',
+      path: '/user',
       headers: {
         'AuthToken': authToken
       }

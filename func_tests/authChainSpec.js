@@ -23,7 +23,7 @@ describe('auth chain', function () {
     var req = http.request({
       port: config.port,
       method: 'POST',
-      path: '/register',
+      path: '/user',
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': postData.length
@@ -116,8 +116,8 @@ describe('auth chain', function () {
   it('should not fail on unregister', function (done) {
     var req = http.request({
       port: config.port,
-      method: 'POST',
-      path: '/unregister',
+      method: 'DELETE',
+      path: '/user',
       headers: {
         'AuthToken': authToken
       }

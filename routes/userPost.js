@@ -6,7 +6,7 @@ var fields = require('../libs/fields.js');
 var auth = require('../libs/auth.js');
 var logger = require('../libs/logger.js');
 
-server.post('/register', bodyParser.json(), function (req, res) {
+server.post('/user', bodyParser.json(), function (req, res) {
 
   var validation = fields.validate(req, {
     username: fields.StringField,

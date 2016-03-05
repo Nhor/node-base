@@ -15,12 +15,12 @@ var models = {
 };
 
 var routes = {
-  register: require('./routes/register.js'),
-  unregister: require('./routes/unregister.js'),
   login: require('./routes/login.js'),
   logout: require('./routes/logout.js'),
-  getProfile: require('./routes/getProfile.js'),
-  editProfile: require('./routes/editProfile.js')
+  userGet: require('./routes/userGet.js'),
+  userPost: require('./routes/userPost.js'),
+  userPut: require('./routes/userPut.js'),
+  userDelete: require('./routes/userDelete.js')
 };
 
 files.mkdir(__dirname + '/logs').then(function () {
@@ -38,7 +38,7 @@ files.mkdir(__dirname + '/logs').then(function () {
   return database.sync();
 }).then(function () {
   server.listen(config.port, function () {
-    logger.info("Server listening on port: " + this.address().port);
+    logger.info('Server listening on port: ' + this.address().port);
   });
 }).catch(function (err) {
   logger.error(err);

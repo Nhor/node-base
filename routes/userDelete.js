@@ -4,7 +4,7 @@ var server = require('../libs/server.js');
 var auth = require('../libs/auth.js');
 var logger = require('../libs/logger.js');
 
-server.post('/unregister', function (req, res) {
+server.delete('/user', function (req, res) {
 
   return auth.authenticate(req).then(function (user) {
     if (!user) {

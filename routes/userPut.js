@@ -12,7 +12,7 @@ var auth = require('../libs/auth.js');
 var logger = require('../libs/logger.js');
 var profile = require('../libs/profile.js');
 
-server.put('/edit-profile', function (req, res) {
+server.put('/user', function (req, res) {
 
   return auth.authenticate(req).then(function (user) {
     if (!user) {
