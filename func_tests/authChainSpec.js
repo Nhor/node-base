@@ -13,7 +13,7 @@ describe('auth chain', function () {
     dashlessUuidRegex = /^[0-9a-f]{12}[4][0-9a-f]{3}[89ab][0-9a-f]{15}$/i;
   });
 
-  it('should not fail on register', function (done) {
+  it('should not fail on POST user', function (done) {
     var postData = JSON.stringify({
       username: 'test',
       password: 'test123',
@@ -113,7 +113,7 @@ describe('auth chain', function () {
     req.end();
   }, 1000);
 
-  it('should not fail on unregister', function (done) {
+  it('should not fail on DELETE user', function (done) {
     var req = http.request({
       port: config.port,
       method: 'DELETE',

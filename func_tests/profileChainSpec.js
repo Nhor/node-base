@@ -28,7 +28,7 @@ describe('auth chain', function () {
     });
   });
 
-  it('should not fail on edit-profile', function (done) {
+  it('should not fail on PUT user', function (done) {
     var postData = JSON.stringify({
       password: 'test234',
       email: 'test2@test.com'
@@ -63,7 +63,7 @@ describe('auth chain', function () {
     req.end();
   }, 1000);
 
-  it('should not fail on edit-profile', function (done) {
+  it('should not fail on GET user', function (done) {
     var req = http.request({
       port: config.port,
       method: 'GET',
