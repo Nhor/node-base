@@ -1,7 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
+var nodefn = require('when/node');
 var parallel = require('when/parallel');
+var bodyParser = require('body-parser');
 var multiparty = require('multiparty');
 var server = require('../libs/server.js');
 var fields = require('../libs/fields.js');
@@ -14,28 +16,28 @@ server.put('/edit-profile', function (req, res) {
 
   auth.authenticate(req).then(function (user) {
     if (!user) {
-      res.sendStatus(403);
-      return;
+      return res.sendStatus(403);
     }
 
-    var form = new multiparty.Form();
-    form.parse(req, function (err, reqFields, reqFiles) {
-      if (err) {
-        logger.log(err);
-        res.sendStatus(500);
-        return;
+    (function () {
+      if (req.headers['content-type'] === 'application/json') {
+        return nodefn.lift(bodyParser.json())(req, res).then(function () {
+          req.files = {};
+        });
       }
-
-      req.body = _.mapValues(reqFields, _.first);
-      req.files = _.mapValues(reqFiles, _.first);
+      var form = new multiparty.Form();
+      return nodefn.lift(form.parse)(req).then(function (reqFields, reqFiles) {
+        req.body = _.mapValues(reqFields, _.first);
+        req.files = _.mapValues(reqFiles, _.first);
+      });
+    })().then(function () {
 
       var validation = fields.validate(req, {
         password: fields.optional(fields.StringField),
         email: fields.optional(fields.EmailField)
       });
       if (validation) {
-        res.status(400).send(validation);
-        return;
+        return res.status(400).send(validation);
       }
 
       files.validate(req, {
@@ -45,8 +47,7 @@ server.put('/edit-profile', function (req, res) {
           _.map(validation.error, function (file) {
             files.rm(file.path);
           });
-          res.status(400).send(validation);
-          return;
+          return res.status(400).send(validation);
         }
 
         var changes = {};
@@ -75,39 +76,33 @@ server.put('/edit-profile', function (req, res) {
         return parallel(
           _.map(changes, 'check'),
           _.mapValues(changes, 'args')
-        );
-      }).then(function (descriptors) {
-        if (_.some(descriptors, _.isString)) {
-          var error = descriptors.reduce(function (result, elem, index) {
-            var obj = {};
-            obj[_.keys(changes)[index]] = elem;
-            return _.mergeWith(result, obj);
-          }, {});
-          logger.log(JSON.stringify(error));
-          res.status(400).send({error: error});
-          return;
-        }
-
-        parallel(
-          _.map(changes, 'change'),
-          _.mapValues(changes, 'args')
         ).then(function (descriptors) {
-          res.sendStatus(200);
-        }).catch(function (err) {
-          logger.log(err);
-          res.sendStatus(500);
+          if (_.some(descriptors, _.isString)) {
+            var error = descriptors.reduce(function (result, elem, index) {
+              var obj = {};
+              obj[_.keys(changes)[index]] = elem;
+              return _.mergeWith(result, obj);
+            }, {});
+            logger.log(JSON.stringify(error));
+            return res.status(400).send({error: error});
+          }
+
+          parallel(
+            _.map(changes, 'change'),
+            _.mapValues(changes, 'args')
+          ).then(function (descriptors) {
+            return res.sendStatus(200);
+          });
+
         });
 
-      }).catch(function (err) {
-        logger.log(err);
-        res.sendStatus(500);
       });
 
     });
 
   }).catch(function (err) {
     logger.log(err);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   });
 
 });

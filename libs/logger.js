@@ -1,6 +1,6 @@
 'use strict';
 
-var fs = require('fs');
+var files = require('./files.js');
 
 /**
  * Logs specified text to the console and to the log file.
@@ -11,7 +11,7 @@ var log = function (text) {
   var logFile = __dirname + '/../logs/' + time.substr(0, 10) + '.txt';
   var logText = time + ': ' + text;
   console.log(logText);
-  fs.writeFile(logFile, logText + '\n', {flag: 'a'}, function (err) {
+  files.write(logFile, logText + '\n').catch(function (err) {
     if (err) {
       console.error(err);
     }

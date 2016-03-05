@@ -126,8 +126,8 @@ var changeAvatar = function (args) {
   var avatar = args.avatar.avatar;
 
   var fileName = uuid.v4();
-  var avatarPath = 'public/users/' + user.username + '/avatar/' + fileName + '.png';
-  var avatarThumbnailPath = 'public/users/' + user.username + '/avatar/' + fileName + '_thumbnail.png';
+  var avatarPath = 'public/users/' + user.id + '/avatar/' + fileName + '.png';
+  var avatarThumbnailPath = 'public/users/' + user.id + '/avatar/' + fileName + '_thumbnail.png';
 
   return jimp.read(avatar.path).then(function (avatar) {
     return when.all([

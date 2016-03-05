@@ -4,6 +4,7 @@ var when = require('when');
 var nodefn = require('when/node');
 var bcrypt = nodefn.liftAll(require('bcrypt'));
 var config = require('./config.js');
+var files = require('./files.js');
 var logger = require('./logger.js');
 var uuid = require('./uuid.js');
 var AuthToken = require('../models/AuthToken.js');
@@ -79,8 +80,10 @@ var register = function (username, password, email) {
           email: email.toLowerCase()
         });
       }).then(function (user) {
-        logger.log('Successfully registered user with username="' + user.username + '".');
-        return login(user.username, password);
+        return files.mkdir(__dirname + '/../public/users/' + user.id + '/avatar').then(function () {
+          logger.log('Successfully registered user with username="' + user.username + '".');
+          return login(user.username, password);
+        });
       });
     });
   });
@@ -97,6 +100,8 @@ var unregister = function (user) {
       return;
     }
     return user.destroy().then(function (rows) {
+      return files.rm(__dirname + '/../public/users/' + user.id);
+    }).then(function () {
       logger.log('Successfully unregistered user with username="' + user.username + '".');
       return true;
     });

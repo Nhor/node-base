@@ -4,6 +4,7 @@ var fs = require('fs');
 var when = require('when');
 var jimp = require('jimp');
 var config = require('./libs/config.js');
+var files = require('./libs/files.js');
 var server = require('./libs/server.js');
 var database = require('./libs/database.js');
 var logger = require('./libs/logger.js');
@@ -22,11 +23,9 @@ var routes = {
   editProfile: require('./routes/editProfile.js')
 };
 
-if (!fs.existsSync(__dirname + '/logs')) {
-  fs.mkdirSync(__dirname + '/logs')
-}
-
-jimp.read(__dirname + '/public/users/default/avatar/avatar_base.png').then(function (avatar) {
+files.mkdir(__dirname + '/logs').then(function () {
+  return jimp.read(__dirname + '/public/users/default/avatar/avatar_base.png');
+}).then(function (avatar) {
   return when.all([
     avatar
       .resize(config.userAvatarImage.size.width, config.userAvatarImage.size.height)

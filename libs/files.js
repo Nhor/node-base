@@ -98,10 +98,37 @@ var optional = function (expectedFileType) {
 
 /**
  * Create specified directory.
- * @param {string{
+ * @param {string} path - Path of the directory to create.
  */
 var mkdir = function(path) {
   return nodefn.lift(mkdirp)(path, {});
+};
+
+/**
+ * Create specified file.
+ * @param {string} path - Path of the file.
+ */
+var touch = function(path) {
+  return nodefn.lift(fs.open)(path, 'w');
+};
+
+/**
+ * Read specified file.
+ * @param {string} path - Path to the file.
+ * @param {string} [encoding] - Encoding type. Defaults to 'utf8'.
+ */
+var read = function(path, encoding) {
+  return nodefn.lift(fs.readFile)(path, {encoding: encoding || 'utf8'});
+};
+
+/**
+ * Create or write some content to a specified file.
+ * @param {string} path - Path of the file.
+ * @param {string} [content] - Content of the file. Defaults to an empty string.
+ * @param {string} [encoding] - Encoding type. Defaults to 'utf8'.
+ */
+var write = function(path, content, encoding) {
+  return nodefn.lift(fs.writeFile)(path, content || '', {encoding: encoding || 'utf8'});
 };
 
 /**
@@ -128,5 +155,8 @@ module.exports.BmpFile = BmpFile;
 module.exports.ImageFile = ImageFile;
 module.exports.optional = optional;
 module.exports.mkdir = mkdir;
+module.exports.touch = touch;
+module.exports.read = read;
+module.exports.write = write;
 module.exports.mv = mv;
 module.exports.rm = rm;

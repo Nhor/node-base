@@ -103,6 +103,42 @@ describe('files', function () {
     });
   }, 1000);
 
+  it('should not fail on touch', function (done) {
+    var fs = require('fs');
+    var file = __dirname + '/test.txt';
+
+    lib.touch(file).then(function () {
+      expect(fs.existsSync(file)).toBeTruthy();
+      fs.unlinkSync(file);
+      done();
+    });
+  }, 1000);
+
+  it('should not fail on read', function (done) {
+    var fs = require('fs');
+    var file = __dirname + '/test.txt';
+    var content = 'test';
+
+    fs.writeFileSync(file, content, {encoding: 'utf8', flag: 'a'});
+    lib.read(file).then(function (res) {
+      expect(res).toEqual(content);
+      fs.unlinkSync(file);
+      done();
+    });
+  }, 1000);
+
+  it('should not fail on write', function (done) {
+    var fs = require('fs');
+    var file = __dirname + '/test.txt';
+    var content = 'test';
+
+    lib.write(file, content).then(function () {
+      expect(fs.readFileSync(file, {encoding: 'utf8'})).toEqual(content);
+      fs.unlinkSync(file);
+      done();
+    });
+  }, 1000);
+
   it('should not fail on mv', function (done) {
     var fs = require('fs');
     var oldPath = __dirname + '/test.txt';
