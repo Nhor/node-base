@@ -40,7 +40,6 @@ var authenticate = function (request) {
  * @return {AuthToken} Authentication token OR {string} Error message.
  */
 var register = function (username, password, email) {
-  var msg;
   if (!username.match(config.validators.username.regex)) {
     return when.resolve(config.validators.username.description);
   } else if (!password.match(config.validators.password.regex)) {
