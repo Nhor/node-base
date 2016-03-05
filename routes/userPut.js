@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var when = require('when');
 var nodefn = require('when/node');
 var parallel = require('when/parallel');
 var bodyParser = require('body-parser');
@@ -26,9 +27,15 @@ server.put('/user', function (req, res) {
         });
       }
       var form = new multiparty.Form();
-      return nodefn.lift(form.parse)(req).then(function (reqFields, reqFiles) {
-        req.body = _.mapValues(reqFields, _.first);
-        req.files = _.mapValues(reqFiles, _.first);
+      return when.promise(function (resolve, reject) {
+        form.parse(req, function (err, reqFields, reqFiles) {
+          if (err) {
+            return reject(err);
+          }
+          req.body = _.mapValues(reqFields, _.first);
+          req.files = _.mapValues(reqFiles, _.first);
+          return resolve();
+        });
       });
     })().then(function () {
 

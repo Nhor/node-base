@@ -5,6 +5,7 @@ var nodefn = require('when/node');
 var bcrypt = nodefn.liftAll(require('bcrypt'));
 var jimp = require('jimp');
 var config = require('../libs/config.js');
+var files = require('../libs/files.js');
 var uuid = require('../libs/uuid.js');
 var User = require('../models/User.js');
 
@@ -125,12 +126,13 @@ var changeAvatar = function (args) {
     return when.all([
       avatar
         .resize(config.userAvatarImage.size.width, config.userAvatarImage.size.height)
-        .write(__dirname + '/' + avatarPath),
+        .write(__dirname + '/../' + avatarPath),
       avatar
         .resize(config.userAvatarImage.thumbnailSize.width, config.userAvatarImage.thumbnailSize.height)
-        .write(__dirname + '/' + avatarThumbnailPath)
+        .write(__dirname + '/../' + avatarThumbnailPath)
     ]);
   }).then(function () {
+    files.rm(avatar.path);
     return user.update({avatar: avatarPath, avatarThumbnail: avatarThumbnailPath});
   });
 };
