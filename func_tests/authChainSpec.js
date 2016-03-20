@@ -36,8 +36,8 @@ describe('auth chain', function () {
       });
       res.on('end', function () {
         data = JSON.parse(data);
-        expect(data.AuthToken).toMatch(dashlessUuidRegex);
-        authToken = data.AuthToken;
+        expect(data.body.AuthToken).toMatch(dashlessUuidRegex);
+        authToken = data.body.AuthToken;
         done();
       });
     });
@@ -99,8 +99,8 @@ describe('auth chain', function () {
       });
       res.on('end', function () {
         data = JSON.parse(data);
-        expect(data.AuthToken).toMatch(dashlessUuidRegex);
-        authToken = data.AuthToken;
+        expect(data.body.AuthToken).toMatch(dashlessUuidRegex);
+        authToken = data.body.AuthToken;
         done();
       });
     });

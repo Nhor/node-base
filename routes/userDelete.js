@@ -3,26 +3,23 @@
 var server = require('../libs/server.js');
 var auth = require('../libs/auth.js');
 var logger = require('../libs/logger.js');
+var responder = require('../libs/responder.js');
 
 server.delete('/user', function (req, res) {
 
   return auth.authenticate(req).then(function (user) {
     if (!user) {
       logger.warn('Authentication failed for AuthToken with key="' + req.headers.authtoken + '".');
-      return res.sendStatus(403);
+      return responder.forbidden(res);
     }
 
-    return auth.unregister(user).then(function (unregister) {
-      if (!unregister) {
-        logger.warn(JSON.stringify({error: 'Unregistration failed for user with username="' + user.username + '".'}));
-        return res.status(400).send({error: 'Unregistration failed.'});
-      }
-      return res.sendStatus(200);
+    return auth.unregister(user).then(function () {
+      return responder.success(res);
     });
 
   }).catch(function (err) {
     logger.error(err);
-    return res.sendStatus(500);
+    return responder.internalServerError(res);
   });
 
 });

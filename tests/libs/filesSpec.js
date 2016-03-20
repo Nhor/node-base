@@ -29,7 +29,7 @@ describe('files', function () {
         test: lib.PngFile
       });
     }).then(function (res) {
-      expect(res.error.test).toContain('Got wrong file format');
+      expect(res.test).toContain('Got wrong file format');
 
       done();
     });
@@ -52,7 +52,7 @@ describe('files', function () {
         test: lib.ImageFile
       });
     }).then(function (res) {
-      expect(res.error.test).toContain('Got wrong file format');
+      expect(res.test).toContain('Got wrong file format');
 
       done();
     });
@@ -85,7 +85,7 @@ describe('files', function () {
         test2: lib.PngFile
       });
     }).then(function (res) {
-      expect(res.error.test2).toContain('Got wrong file format');
+      expect(res.test2).toContain('Got wrong file format');
 
       done();
     });

@@ -33,7 +33,7 @@ var validate = function (request, fields) {
   );
 
   if (!_.isEmpty(error)) {
-    return {error: error};
+    return error;
   }
 };
 

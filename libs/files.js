@@ -50,7 +50,7 @@ var validate = function (request, files) {
         }
         _.unset(files, fileName);
         if (_.isEmpty(files)) {
-          return resolve(_.isEmpty(_.pickBy(error)) ? undefined : {error: _.pickBy(error)});
+          return resolve(_.isEmpty(_.pickBy(error)) ? undefined : _.pickBy(error));
         }
       }).catch(function (err) {
         return reject(err);

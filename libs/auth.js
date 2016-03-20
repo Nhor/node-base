@@ -77,18 +77,12 @@ var register = function (username, password, email) {
 /**
  * Unregister user (in other words delete him).
  * @param {User} user - Requesting user model instance.
- * @param {boolean} True if unregister was successful.
  */
 var unregister = function (user) {
-  return logout(user).then(function (res) {
-    if (!res) {
-      return;
-    }
-    return user.destroy().then(function (rows) {
-      return files.rm(__dirname + '/../public/users/' + user.id);
-    }).then(function () {
-      return true;
-    });
+  return logout(user).then(function () {
+    return user.destroy()
+  }).then(function (rows) {
+    return files.rm(__dirname + '/../public/users/' + user.id);
   });
 };
 
@@ -135,7 +129,6 @@ var login = function (username, password) {
 /**
  * Logout user.
  * @param {User} user - Requesting user model instance.
- * @return {boolean} True if logout was successful.
  */
 var logout = function (user) {
   return AuthToken.findOne({where: {userId: user.id}}).then(function (authToken) {
@@ -143,8 +136,6 @@ var logout = function (user) {
       return authToken.destroy();
     }
     return when.resolve();
-  }).then(function () {
-    return true;
   });
 };
 

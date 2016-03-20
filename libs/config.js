@@ -28,11 +28,11 @@
 var config = {
   port: 8000,
   database: {
-    name: '',
+    name: 'test',
     host: '127.0.0.1',
     port: 5432,
-    user: '',
-    password: ''
+    user: 'norbert',
+    password: 'aMFoaWiES9'
   },
   validators: {
     username: {

@@ -12,12 +12,13 @@ var files = require('../libs/files.js');
 var auth = require('../libs/auth.js');
 var logger = require('../libs/logger.js');
 var profile = require('../libs/profile.js');
+var responder = require('../libs/responder.js');
 
 server.put('/user', function (req, res) {
 
   return auth.authenticate(req).then(function (user) {
     if (!user) {
-      return res.sendStatus(403);
+      return responder.forbidden(res);
     }
 
     return (function () {
@@ -45,17 +46,17 @@ server.put('/user', function (req, res) {
       });
       if (validation) {
         logger.warn(JSON.stringify(validation));
-        return res.status(400).send(validation);
+        return responder.badRequest(res, validation);
       }
       return files.validate(req, {
         avatar: files.optional(files.ImageFile)
       }).then(function (validation) {
         if (validation) {
           _.map(validation.error, function (file) {
-            files.rm(file.path);
+            return files.rm(file.path);
           });
           logger.warn(JSON.stringify(validation));
-          return res.status(400).send(validation);
+          return responder.badRequest(res, validation);
         }
 
         var changes = {};
@@ -92,14 +93,14 @@ server.put('/user', function (req, res) {
               return _.mergeWith(result, obj);
             }, {});
             logger.warn(JSON.stringify(error));
-            return res.status(400).send({error: error});
+            return responder.badRequest(res, error);
           }
           return parallel(
             _.map(changes, 'change'),
             _.mapValues(changes, 'args')
           ).then(function (descriptors) {
             logger.info('Successfully changed ' + _.keys(changes).join(', ') + ' for user with username="' + user.username + '".');
-            return res.sendStatus(200);
+            return responder.success(res);
           });
         });
 
@@ -109,7 +110,7 @@ server.put('/user', function (req, res) {
 
   }).catch(function (err) {
     logger.error(err);
-    return res.sendStatus(500);
+    return responder.internalServerError(res);
   });
 
 });

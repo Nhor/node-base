@@ -23,7 +23,7 @@ var routes = {
   userDelete: require('./routes/userDelete.js')
 };
 
-files.mkdir(__dirname + '/logs').then(function () {
+return files.mkdir(__dirname + '/logs').then(function () {
   return jimp.read(__dirname + '/public/users/default/avatar/avatar_base.png');
 }).then(function (avatar) {
   return when.all([
