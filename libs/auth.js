@@ -14,7 +14,7 @@ var User = require('../models/User.js');
  * @param {object} request - HTTP request.
  */
 var authenticate = function (request) {
-  var queryParams = {where: {key: request.headers.authtoken}};
+  var queryParams = {where: {key: request.headers.authtoken}, include: [User]};
   return AuthToken.findOne(queryParams).then(function (authToken) {
     if (!authToken) {
       return;
@@ -22,13 +22,7 @@ var authenticate = function (request) {
     if (!checkAuthTokenValidity(authToken)) {
       return authToken.destroy();
     }
-    return User.findOne({
-      where: {
-        id: authToken.userId
-      }
-    }).then(function (user) {
-      return user;
-    });
+    return authToken.user;
   });
 };
 
@@ -107,7 +101,7 @@ var login = function (username, password) {
       if (!res) {
         return;
       }
-      return AuthToken.findOne({where: {userId: user.id}}).then(function (token) {
+      return AuthToken.findOne({where: {user_id: user.id}}).then(function (token) {
         if (token) {
           if (checkAuthTokenValidity(token)) {
             return token;
@@ -119,7 +113,7 @@ var login = function (username, password) {
         return AuthToken.create({
           key: uuid.v4(),
           expirationDate: new Date((new Date()).getTime() + config.authTokenExpiration * 24 * 60 * 60 * 1000),
-          userId: user.id
+          user_id: user.id
         });
       });
     });
@@ -131,7 +125,7 @@ var login = function (username, password) {
  * @param {User} user - Requesting user model instance.
  */
 var logout = function (user) {
-  return AuthToken.findOne({where: {userId: user.id}}).then(function (authToken) {
+  return AuthToken.findOne({where: {user_id: user.id}}).then(function (authToken) {
     if (authToken) {
       return authToken.destroy();
     }

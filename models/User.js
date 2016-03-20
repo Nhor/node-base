@@ -44,6 +44,7 @@ var User = database.define('user', {
   paranoid: false,
   createdAt: 'created',
   updatedAt: 'edited'
-}).schema(config.database.schema);
+});
+User.schema(config.database.schema);
 
 module.exports = User;

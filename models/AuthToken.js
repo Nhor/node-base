@@ -22,22 +22,15 @@ var AuthToken = database.define('auth_token', {
     field: 'expiration_date',
     type: Sequelize.DATE,
     allowNull: false
-  },
-  userId: {
-    field: 'user_id',
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: 'id',
-      deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-    }
   }
 }, {
   timestamps: true,
   paranoid: false,
   createdAt: 'created',
   updatedAt: false
-}).schema(config.database.schema);
+});
+AuthToken.schema(config.database.schema);
+
+AuthToken.belongsTo(User, {foreignKey: 'user_id'});
 
 module.exports = AuthToken;
