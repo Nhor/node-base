@@ -1,6 +1,7 @@
 'use strict';
 
 var Sequelize = require('sequelize');
+var config = require('../libs/config.js');
 var database = require('../libs/database.js');
 var User = require('./User.js');
 
@@ -37,6 +38,6 @@ var AuthToken = database.define('auth_token', {
   paranoid: false,
   createdAt: 'created',
   updatedAt: false
-});
+}).schema(config.database.schema);
 
 module.exports = AuthToken;

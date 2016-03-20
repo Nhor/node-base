@@ -10,7 +10,8 @@ var database = new Sequelize(
     dialect: 'postgres',
     host: config.database.host,
     port: config.database.port,
-    logging: false
+    logging: false,
+    schema: config.database.schema
   }
 );
 

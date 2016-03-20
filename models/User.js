@@ -1,6 +1,7 @@
 'use strict';
 
 var Sequelize = require('sequelize');
+var config = require('../libs/config.js');
 var database = require('../libs/database.js');
 
 var User = database.define('user', {
@@ -43,6 +44,6 @@ var User = database.define('user', {
   paranoid: false,
   createdAt: 'created',
   updatedAt: 'edited'
-});
+}).schema(config.database.schema);
 
 module.exports = User;
